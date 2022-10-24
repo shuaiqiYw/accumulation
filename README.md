@@ -44,6 +44,9 @@
             4、vuex通信
 */
 
+## 柯里化函数（Currying）
+  转载：https://blog.csdn.net/m0_52409770/article/details/123359123
+
 ## Object.assign()
    简单来说，就是Object.assign()是对象的静态方法，可以用来复制对象的可枚举属性到目标对象，利用这个特性可以实现对象属性的合并。
    用法： Object.assign(target, ...sources)
@@ -64,5 +67,3 @@
   */
   // 如果目标对象和源对象有重名属性的，则后面的覆盖前面的
   
-## 柯里化函数（Currying）
-  转载：https://blog.csdn.net/m0_52409770/article/details/123359123
