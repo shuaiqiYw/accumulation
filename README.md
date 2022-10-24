@@ -64,3 +64,5 @@
   */
   // 如果目标对象和源对象有重名属性的，则后面的覆盖前面的
   
+## 柯里化函数（Currying）
+  转载：https://blog.csdn.net/m0_52409770/article/details/123359123
