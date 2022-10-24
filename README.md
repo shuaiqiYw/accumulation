@@ -53,7 +53,7 @@
       source--->源对象
 
   返回值：target，即目标对象
-  ```
+  ``` JavaScript
   var target = {name:'qwe',age:'12'};
   var source = {state:'single'};
   var result = Object.assign(target,source)
