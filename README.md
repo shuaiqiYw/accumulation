@@ -43,4 +43,24 @@
             3、provide/inject
             4、vuex通信
 */
+
+## Object.assign()
+   简单来说，就是Object.assign()是对象的静态方法，可以用来复制对象的可枚举属性到目标对象，利用这个特性可以实现对象属性的合并。
+   用法： Object.assign(target, ...sources)
+
+  参数：target--->目标对象
+
+      source--->源对象
+
+  返回值：target，即目标对象
+  ```
+  var target = {name:'qwe',age:'12'};
+  var source = {state:'single'};
+  var result = Object.assign(target,source)
+  console.log(result)
+  // {name:'qwe',age:'12',state:'single'}
+  /*
+    source上的state属性合并到了target对象上。如果只是想将两个或多个对象的属性合并到一起，不改变原有对象的属性，可以用一个空的对象作为target对象。
+  */
+  // 如果目标对象和源对象有重名属性的，则后面的覆盖前面的
   
