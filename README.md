@@ -68,3 +68,5 @@
   */
   // 如果目标对象和源对象有重名属性的，则后面的覆盖前面的
   
+## JS高级知识汇总
+转载：https://blog.csdn.net/weixin_50926010/article/details/124899601
