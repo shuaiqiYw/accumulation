@@ -71,3 +71,18 @@
   
 ## JS高级知识汇总
 转载：https://blog.csdn.net/weixin_50926010/article/details/124899601
+
+## 踩坑（[Vue warn]:Duplicate keys detected: ''. This may cause an update error）
+原因1：绑定的key值确实存在重复的情况
+原因2：绑定的value值忘记填写或者是有重复的值(即便key值不一样)
+原因2例子：
+``` Vue
+<a-select-option v-for="item of taskList" :key="item.id" :value="">
+  {{ item.jobName }}
+</a-select-option>
+
+<a-select-option v-for="item of taskList" :key="item.id" :value="item.jobName">
+  {{ item.jobName }}
+</a-select-option>
+//taskList:[{...},{...},{...},{id:1,jobName:"AAA"},{id:2,jobName:"AAA"},]
+```
