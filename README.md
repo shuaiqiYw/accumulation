@@ -72,6 +72,9 @@
 ## JS高级知识汇总
 转载：https://blog.csdn.net/weixin_50926010/article/details/124899601
 
+## JS原型
+转载：https://blog.csdn.net/sugela8/article/details/126154526
+
 ## 踩坑（[Vue warn]:Duplicate keys detected: ''. This may cause an update error）
 原因1：绑定的key值确实存在重复的情况
 原因2：绑定的value值忘记填写或者是有重复的值(即便key值不一样)
