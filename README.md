@@ -89,3 +89,5 @@
 </a-select-option>
 //taskList:[{...},{...},{...},{id:1,jobName:"AAA"},{id:2,jobName:"AAA"},]
 ```
+## 回显问题 --select
+下拉框绑定的为id，如果下拉框的数据源为空则会回显成id，如果在点击回显时得到数据源就会自动匹配显示相应的name
