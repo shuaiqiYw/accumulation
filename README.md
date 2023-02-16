@@ -10,6 +10,9 @@
 转载 ：https://blog.csdn.net/youzhouliu/article/details/78952453
 转载：https://blog.csdn.net/qq_46043634/article/details/104217031
 
+## git命令使用
+转载：https://blog.csdn.net/qq_42363495/article/details/104878170
+
 ## 宏任务与微任务
   > JS的主线程执行的任务中分为同步任务和异步任务，异步任务再分为宏任务（Task）与微任务（Jobs）
   > 宏任务一般包含：1. script (可以理解为外层同步代码)
