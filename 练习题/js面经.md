@@ -26,10 +26,26 @@ true <br>
 "undefined" <br>
 解析：第一个 false 是因为 delete 只能删除对象上的属性，name 不是属性，所以删除失败。第二个 true 是因为我们不使用任何声明创建变量，它会被视作全局变量，挂载到 window 对象上面，等价于 delete window.age，所以删除成功。第三个 undefined 是因为 age 被删除了。
 
-
-
-
-作者：代码与野兽
-链接：https://juejin.cn/post/7133397098719870990
-来源：稀土掘金
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+## 手写call
+``` JavaScript
+Function.prototype.myCall = function (context) {
+  // 判断调用对象
+  if (typeof this !== "function") {
+    throw new Error("Type error");
+  }
+  // 首先获取参数
+  let args = [...arguments].slice(1);
+  let result = null;
+  // 判断 context 是否传入，如果没有传就设置为 window
+  context = context || window;
+  // 将被调用的方法设置为 context 的属性
+  // this 即为我们要调用的方法
+  context.fn = this;
+  // 执行要被调用的方法
+  result = context.fn(...args);
+  // 删除手动增加的属性方法
+  delete context.fn;
+  // 将执行结果返回
+  return result;
+};
+```
