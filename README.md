@@ -93,4 +93,36 @@
 //taskList:[{...},{...},{...},{id:1,jobName:"AAA"},{id:2,jobName:"AAA"},]
 ```
 ## 回显问题 --select
-下拉框绑定的为id，如果下拉框的数据源为空则会回显成id，如果在点击回显时得到数据源就会自动匹配显示相应的name
+下拉框绑定的为id，如果下拉框的_数据源为空_则会回显成id，如果在点击回显时得到数据源就会自动匹配显示相应的name  
+搜索下拉框输入汉字下拉框没有内容，但接口确实返回了数据，解决实例：  
+``` Vue
+              <a-select
+                v-model="submitObj.activityId"
+                style="width: 250px"
+                @change="getActivityId"
+                show-search
+                @search="changePageSearch"
+                @dropdownVisibleChange.once="getActivity"
+                :disabled="flowStatus==='viewFlow'"
+                :filter-option="filterOption"
+              >
+                <a-select-option :value="item.activityId" v-for="(item,index) in activityData" :key="index">
+                  {{ item.activityName }}
+                </a-select-option>
+              </a-select>
+            </a-form-model-item>
+            <a-form-model-item label="奖品选择" prop="awardId" >
+              <a-select v-model="submitObj.awardId" style="width: 250px" :disabled="flowStatus==='viewFlow'">
+                <a-select-option :value="item.cardNo" v-for="(item,index) in prizeData" :key="index">
+                  {{ item.cardName }}
+                </a-select-option>
+              </a-select>
+              
+              
+              
+              filterOption (input, option) {
+                return (
+                  option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                )
+              },
+```
