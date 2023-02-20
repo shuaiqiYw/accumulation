@@ -2,11 +2,13 @@
 
 ## 第一题
 尝试推测它的输出： <br>
-const person = { name: '代码与野兽' } <br>
-Object.defineProperty(person, 'age', { value: 18 }) <br>
+``` JavaScript
+const person = { name: '代码与野兽' }
+Object.defineProperty(person, 'age', { value: 18 })
 
-console.log(person.age) <br>
-console.log(Object.keys(person)) <br>
+console.log(person.age)
+console.log(Object.keys(person))
+```
 输出： <br>
 18 <br>
 ['name'] <br>
@@ -14,12 +16,14 @@ console.log(Object.keys(person)) <br>
 
 ## 第二题
 尝试推测它的输出： <br>
-const name = '代码与野兽' <br>
-age = 18 <br>
+```JavaScript
+const name = '代码与野兽'
+age = 18 
 
-console.log(delete name) <br>
-console.log(delete age) <br>
-console.log(typeof age) <br>
+console.log(delete name) 
+console.log(delete age) 
+console.log(typeof age) 
+```
 输出： <br>
 false <br>
 true <br>
