@@ -37,18 +37,18 @@
 
 ## vue组件通信方式
 /* 
-    组件中的通信方式，可以分为
-        父==>子：
-            1、通过props传值
-            2、ref通信
-            3、$children通信
-        子==>父：
-            1、自定义事件this.$emit()
-        兄弟==>兄弟：
-            1、$parent
-            2、事件总线通信eventBus
-            3、provide/inject
-            4、vuex通信
+    组件中的通信方式，可以分为  
+        父==>子：  
+            1、通过props传值  
+            2、ref通信  
+            3、$children通信  
+        子==>父：  
+            1、自定义事件this.$emit()  
+        兄弟==>兄弟：  
+            1、$parent  
+            2、事件总线通信eventBus  
+            3、provide/inject  
+            4、vuex通信  
 */
 
 ## 柯里化函数（Currying）
