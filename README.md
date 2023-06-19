@@ -129,3 +129,9 @@
                 )
               },
 ```
+## 千分位
+.toLocaleString('en-US', {
+  style: 'decimal',
+  minimumFractionDigits: 2
+})
+              
