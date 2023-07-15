@@ -1,0 +1,477 @@
+## React
+
+### 1、组件通讯
+
+- 父传子：直接在子组件上以属性形式传递，子组件用props形参接收（不能直接修改父组件传递过来的值！需要改变则要用新变量接收再改变）
+
+- 子传父：在子组件上传递一个函数，子组件props解构接收，并调用该函数将数据当作参数写入，父组件就可以通过形参来得到子组件传递过来的数据
+
+- 兄弟传值：先传递给父组件，再由父组件传给另一个兄弟组件
+
+- 祖孙传值（深层次）：需要传递的组件引用createContext，再通过Context.Provider组件传递需要的传的值,然后接收方使用useContext接收
+
+  ```javascript
+  import { createContext } from 'react'
+  const context = createContext()
+  <Context.Provider value={{age:"18"}}>
+      //代码...
+  </Context.Provider>
+  
+  //接收
+  import { useContext } from 'react'
+  const result = useContext(context) // 这里接收的一定是发送方定义createContext的变量名
+  console.log(result.age) // 18
+  ```
+
+### 2、hook
+
+- useState()
+
+  处理数据结构
+
+  ```javascript
+  // val为数据，setVal为修改数据的回调函数，每次修改会使函数组件重新创建
+  const [val,setVal] = useState("初始数据") 
+  ```
+
+- useEffect()
+
+  清理副作用（副作用：函数内部操作对函数外部的内容产生影响。例如：变量，节点，ajax，本地存储）
+
+  ```javascript
+  //模拟生命周期
+  useEffect(()=>{
+      console.log("初始化执行")
+  },[])
+  
+  useEffect(()=>{
+      let flag = true;
+      if(refDom.current && flag){
+          flag = false
+      }else{
+      	console.log("数据更新后执行")    
+      }
+  })
+  
+  useEffect(()=>{
+      return ()=>{
+          console.log("组件销毁时执行")
+      }
+  },[])
+  ```
+
+- useRef()
+
+  获取DOM节点信息
+
+  ```javascript
+  const refDom = useRef()
+  console.log(refDom.current) // 打印节点信息节点
+  // 返回的jsx
+  <button ref={refDom}></button>
+  ```
+
+- useContext()
+
+  用于跨组件通讯，具体使用见1
+
+- useCallback()
+
+  用于存储函数不被创建（重新执行函数组件时，会重新创建内部所有函数）
+
+  1、存储的函数不会被删除
+
+  2、返回值是一个函数
+
+  **用于性能优化**
+
+- useMemo()
+
+  类似于vue的计算属性，返回的是一个数据
+
+- useReducer()
+
+  加强版的useState(),相当于一个小型仓库，用于存储交大量数据，且使用useState很繁琐冗余的场景
+
+  ```javascript
+  /* 
+  	reducer：处理数据（initObj）的回调函数
+  	initObj：初始化数据
+  	data：返回处理完的数据
+  	setData：相当于一个纯函数，只是用于启动callback，并且由于存储的数据较多，不同情况下会处理不同的数据，就会传递参数，一般为{type:"起到标识作用"，value："需要的值"}
+  	prevState：上一步的数据
+  	action：接收setData传递的数据
+  */
+  let initObj = [
+      {name:"qq",age:12},
+      {name:"ww",age:14},
+      {name:"ee",age:16}
+  ]
+  function reducer(prevState,action){
+      let state = {...prevState}
+      // 处理数据
+      switch(action.type){
+              case:"add"
+             		state[0].age += 1
+              break;
+              case:"down"
+             		state[1].age -= 1
+              break;
+      }
+      // 必须设置返回值由于修改data数据
+      // 不能直接返回prevState，需要返回一个新的数据，所以需要先用新变量接收
+      return state
+  }
+  const [data,setData] = useReducer(reducer,initObj)
+  
+  //jsx
+  <button setData={{type:"add"}}>加</button>
+  <button setData={{type:"down"}}>减</button>
+  ```
+
+- 自定义hook
+
+  作用：复用、抽离
+
+  注意：1、自定义hook必须以use开头
+
+  ​		   2、只能在函数的最顶层使用，不能在循环，条件判断，子函数中调用
+
+### 3、代理服务器
+
+***写在src文件夹下，命名一定是setupProxy.js***
+
+1、本地发送一个ajax请求，后端没有设置跨域，前端直接请求产生cors跨域问题
+
+2、通过服务器代理模式（转发请求）解决cors跨域
+
+3、写配置文件在src中，setupProxy.js中
+
+```javascript
+npm i http-proxy-middleware   // 安装代理服务器插件
+```
+
+```javascript
+//  书写配置
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
+module.exports = function(app){
+    app.use(
+    	createProxyMiddleware('/api',{ // 
+            target:"http:localhost:5000",  // 请求的目标地址
+            changeOrigin:true, // host字段
+            pathRewrite:{  // 去掉请求的前缀
+                "^/api": ""
+            }
+        })
+    )
+}
+```
+
+### 4、router使用
+
+```javascript
+npm install react-router-dom  // 安装react-router路由
+```
+
+```react
+// 在入口文件index.js中引入,并包裹<APP />组件，保证整个项目中都能检测并使用router
+import { BrowserRouter } from "react-router-dom"
+ReactDOM.createRoot(document.getElementById("root")).render(
+	<BrowserRouter>
+    	<APP />
+    </BrowserRouter>
+)
+
+// 组件内基本使用
+import { Link, Route, Routes } from "react-router-dom"
+// jsx  路由入口
+<Link to="/">默认路由入口</Link>
+<Link to="/home">Home组件入口</Link>
+<Link to="/login">Login组件入口</Link>
+
+
+// 路由出口
+<Routes>
+    <Router path="/" element={<Default />}></Routr>    
+	<Router path="/home" element={<Home />}></Routr>    
+	<Router path="/login" element={<Login />}></Routr>   
+</Routes>
+
+// pages文件夹一般写路由组件
+// to 对应 path ， element 对应 相应的组件   一一对应
+
+// 实际项目中路由过多，肯定需要建立路由表，便需要使用useRoutes
+// 新建router文件夹，该文件夹下再新建index.js
+import Default from "./pages/Default"
+import Home from "./pages/Home"
+import Login from "./pages/Login"
+
+const route = [
+    {
+        path:"/",
+        element:<Default />
+    },
+    {
+        path:"/home",
+        element:<Home />
+    },
+    {
+        path:"/login",
+        element:<Login />
+    },
+] 
+
+export default route 
+
+// 组件内使用
+import { useRoutes } from "react-router-dom"
+import route from "./router/index.js"  // 引入路由表
+    
+const router = useRoutes(route)
+
+// jsx 将router放在需要展示的地方
+<div>
+	{ router }    
+</div>
+```
+
+从"react-router-dom"中引入NavLink后可以替代Link作为路由入口，其主要功能是该标签内的className属性中可以传递一个回调函数，其中存在一个isActive的参数，用于验证该标签是否被选中的标识（true、false），可以用来设置被点击或者没被点击的样式
+
+```react
+<NavLink to="/qqq" className={({isActive})=>{ return isActive ? "black" : "red" }}>		跳转
+</NavLink>
+// black和red为class名，不是颜色，需要在该文件下新建一个scss文件
+//如果这种需求变多了，可以单独放在API文件夹下的新建的一个文件，进行一个抽离，主要抽离的是className中的函数部分
+```
+
+**嵌套路由（子路由）**
+
+```react
+// home组件中
+import { Link, Outlet } from "react-router-dom"
+// jsx 入口处不需要写"/",如果写了就是一级路由了
+<Link to:"child">子路由</Link>
+// 子路由出口
+<Outlet></Outlet>
+
+// ./router/index.js 路由表中添加children属性即可
+const route = [
+    {
+        path:"/",
+        element:<Default />
+    },
+    {
+        path:"/home",
+        element:<Home />,
+        children:[
+            {
+                path:"child",
+                element:<Child />
+            },
+        ]
+    },
+    {
+        path:"/login",
+        element:<Login />
+    },
+] 
+```
+
+**路由传递参数**
+
+1、行内传递参数
+
+```react
+// 传递
+<Link to="child?name=yw&age=18">子路由入口</Link>
+//接收
+import { useSearchParams } from "react-router-dom"
+const [search] = useSearchParams()
+let name = search.get("name")
+let age = search.get("age")
+console.log(name,age)  // yw,18
+```
+
+2、state传递参数
+
+```react
+// 传递
+let {name,age} = {name:"yw",age:"18"}
+<Link to="child" state={{name,age}}>子路由入口</Link>
+//接收
+import { useLocation } from "react-router-dom"
+const {state:{name,age}} = useLocation()
+console.log(name,age)  // yw,18
+```
+
+3、获取动态路由参数
+
+```react
+// 传递   <Link to="child/qqq/123">子路由入口</Link>
+let {name,age} = {name:"yw",age:"18"}
+<Link to=`child/${name}/${age}`>子路由入口</Link>
+// 路由表 
+const route = [
+    {
+        path:"/home",
+        element:<Home />,
+        children:[
+            {
+                path:"child/:name/:age",  // 动态路由
+                element:<Child />
+            },
+        ]
+    },
+]
+//接收
+import { useParams } from "react-router-dom"
+const {name,age} = useParams()
+console.log(name,age)  // yw,18
+```
+
+4、编程式导航（ useNavigate(to, options) options配置对象 ）
+
+```react
+// 基本使用
+import { useNavigate } from "react-router-dom"
+const navigate = useNavigate()
+const jump = () => {
+    // 写了"/"就是根目录
+    navigate("child",{
+        // 为true时，会覆盖前一次路由跳转记录，所以当使用navigate(number)时不能前进后退
+        // 为false时，不会覆盖前一次路由跳转记录，会将跳转记录记录下来，所以当使用navigate(number)时能前进后退
+        replace:false   
+    })
+}
+// jsx
+<button onClick={jump}>跳转</button>
+/*
+	navigate(number): 根据浏览器的历史记录进行跳转
+		number：正数前进（1）  负数后退（-1）
+*/
+```
+
+
+
+### 5、redux
+
+用于大型项目，处理各个组件之间的通讯，集中管理应用的状态（数据）和逻辑（react代码）
+
+使用动作事件（自定义事件），完成修改管理的数据
+
+**三大原则**
+
+- 整个应用的数据，只存在于唯一一个store中
+- state是只读的，唯一改变state的方法就是触发action（自定义事件），action是一个用于描述已发生事件的普通对象
+- 使用纯函数来执行修改state，为了描述action如何改变state（数据），需要编写reducers
+
+**原理**
+
+- 初始化仓库：通过createStore(callback)来创建一个仓库，接收的callback为reducer函数
+
+  ​				     store调用一次reducer，就会将返回值保存为它的初始值state
+
+  ​					 视图首次渲染时会访问仓库store当前的数据来呈现内容，同时监听store的更新，以便知道store中的值是否改变
+
+- 更新：当用户产生了交互行为，比如点击了按钮想要改变仓库中某一数据的值，则需要store下的dispatch方法来触发，reducer函数接收两个参数（state（上一次数据）,action（自定义事件））并且再次允许reducer，将返回值保存为新的state。reducer函数需要自己编写，可以结合useReducer()hook结合理解，两者类似。
+
+  ***具体使用如下：***
+
+  ```react
+  // 1、下载redux
+  npm i redux   
+  // 2、创建redux文件夹，并在该路径下新建store和reducer两个js文件
+  
+  /* store.js */
+  import { createStore } from "redux"
+  import reducer from "./reducer.js"
+  export default createStore(reducer)
+  
+  /* reducer.js */
+  let init = {
+      name:"yw",
+      age:18
+  }
+  function reducer (state = init, action) {
+      // 不能直接返回state
+      let newObj = {...state}
+      switch(action.type){
+              case "add"
+              	return newObj.age += action.num
+              case "down"
+              	return newObj.age -= action.num
+              case default
+              	return newObj
+      }
+  }
+  export default reducer
+  // 3、视图通过dispatch触发仓库改变,但是此时视图并没有发生改变
+  import store from "../redux/store"
+  const changeAge = () => {
+      store.dispatch({type:"add",num:1})
+  }
+  // jsx
+  <div>
+  	<h1>{ store.getState().age }</h1>  // store.getState()获取仓库数据
+  	<button onClick={ changeAge }>点击改变年龄</button>
+  </div>
+  // 4、在入口文件index.js文件中添加subscribe来改变视图，性能会由diff算法节省
+  import store from "../../redux/store"
+  store.subscribe(()=>{
+      root.render(
+      	<App />
+      )
+  })
+  ```
+
+  **优化redux文件夹**
+
+  ```react
+  // 由于要不同处理各种数据，需要单独新建一个reducer文件夹，用于新建各种处理函数的文件
+  
+  // 新增variable文件夹，当项目庞大后，命名便有可能会出现重复而无法察觉的情况，于是用于记录命名，变量名用大写，出现重复的就会产生报错，方便维护
+  export const ADD = "add"
+  export const DOWN = "down"
+  ......
+  // 新增action文件夹，用于记录type，避免重复
+  import { ADD, DOWN } from "./variable.js"
+  export const createAdd = data => {{ type:ADD, data:data }}
+  export const createDown = data => {{ type:DOWN, data:data }}
+  ......
+   // 如果有异步操作，则需要在这个文件下处理,并且需要下载redux-thunk这个插件，具体配置在store.js文件中，见下
+  export const createAddSync =  {data,num} => {  // 可以传递多个参数
+      return (dispatch) => {
+          setTimeout(()=>{
+              dispatch({type:ADD, data})
+          },num)
+      }
+  }
+  // 视图
+  import store from "../redux/store"
+  const changeAge = () => {
+      store.dispatch(createAdd(1, 1000))
+  }
+  /* store.js */
+  import { createStore, applyMiddleware } from "redux"  // applyMiddleware用于处理中间件（插件）
+  import reducer from "./reducer.js"
+  import reduxThunk from "redux-thunk"
+  
+  export default createStore(reducer,applyMiddleware(reduxThunk))
+  ```
+
+  ### react-redux
+
+  1、redux的语法糖，redux本身就是一个独立的库，可以与React、Angular、Vue一起使用
+
+  2、不能直接让react组件与store（仓库）进行相互操作
+
+  3、react-redux是一个桥梁
+
+  ​		容器组件  包裹  UI组件 ，两者通过props传递需要修改的值
+
+  ​		容器  再与  redux  进行相互操作   
+
+  ​		容器<---redux：store.getState()
+
+  ​		容器--->redux：store.dispatch(action)	 
